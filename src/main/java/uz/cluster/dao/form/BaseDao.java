@@ -1,4 +1,4 @@
-package uz.cluster.dao.reference;
+package uz.cluster.dao.form;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package uz.cluster.services.auth_service;
+package uz.cluster.services.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,8 +12,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uz.cluster.dao.auth.ChangePassword;
 import uz.cluster.entity.auth.User;
-import uz.cluster.enums.auth.SystemRoleName;
 import uz.cluster.payload.auth.LoginDTO;
 import uz.cluster.payload.auth.UserDTO;
 import uz.cluster.payload.response.ApiResponse;
@@ -21,15 +21,13 @@ import uz.cluster.repository.UserRepository;
 import uz.cluster.security.JwtProvider;
 import uz.cluster.security.JwtResponse;
 
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService implements UserDetailsService{
+public class UserService implements UserDetailsService{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
@@ -43,12 +41,6 @@ public class AuthService implements UserDetailsService{
         if (userRepository.existsByEmailAndIdNot(userDTO.getEmail(), 0)) //This will check that email is already exists or not, if not it terminates from adding
             return new ApiResponse(false, "");
 
-        if (userDTO.getPassword().isEmpty()) //This check that user has passport or not, if not it terminates from adding
-            return new ApiResponse(false, "");
-
-        if (Period.between(userDTO.getBirthday(), LocalDate.now()).getYears() < 18)  //This check that user's age is not less than AGE_RESTRICTION, if not this statement terminates from adding
-            return new ApiResponse(false, "");
-
         User user = new User(
                 userDTO.getFirstName().substring(0, 1).toUpperCase(Locale.ROOT) + userDTO.getFirstName().toLowerCase().substring(1),
                 userDTO.getLastName().substring(0, 1).toUpperCase(Locale.ROOT) + userDTO.getLastName().toLowerCase().substring(1),
@@ -59,15 +51,9 @@ public class AuthService implements UserDetailsService{
                 userDTO.isAccountNonLocked()
         );
 
-        if (
-                user.getSystemRoleName() != SystemRoleName.SYSTEM_ROLE_FORM_MEMBER
-                        && user.getSystemRoleName() != SystemRoleName.SYSTEM_ROLE_MEMBER
-        )
-
-
         user.setPassword(passwordEncoder.encode(userDTO.getPassword())); //This sets user's password that is encrypted
         userRepository.save(user); //this saves user to database
-        return new ApiResponse(true, user, "");
+        return new ApiResponse(true, user, "Muvaffaqiyatli saqlandi!");
     }
 
 
@@ -85,16 +71,11 @@ public class AuthService implements UserDetailsService{
         if (optionalUser.isEmpty()) //This check that there is such user, if not this statement terminates from adding
             return new ApiResponse(false, id, "");
 
-        if (Period.between(userDTO.getBirthday(), LocalDate.now()).getYears() < 18) //This check that user's age is not less than 18, if not this statement terminates from adding
-            return new ApiResponse(false, optionalUser.get(),"");
-
         User editingUser = optionalUser.get();
         editingUser.setFirstName(userDTO.getFirstName());
         editingUser.setLastName(userDTO.getLastName());
         editingUser.setLogin(userDTO.getLogin());
         editingUser.setSystemRoleName(userDTO.getSystemRoleName());
-
-        if ( editingUser.getSystemRoleName() != SystemRoleName.SYSTEM_ROLE_FORM_MEMBER && editingUser.getSystemRoleName() != SystemRoleName.SYSTEM_ROLE_MEMBER )
 
         if (!userDTO.getPassword().isEmpty()) //If user's password is changed, it again encrypts it and assigns to user
             editingUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
@@ -118,9 +99,30 @@ public class AuthService implements UserDetailsService{
 
     public ApiResponse delete(int id) {
         if (!userRepository.existsById(id))
-            return new ApiResponse(false,"");
+            return new ApiResponse(false,"Foydalanuvchi mavjud emas !");
         userRepository.deleteById(id);
-        return new ApiResponse(true, "");
+        return new ApiResponse(true, "Muvaffaqiyatli saqlandi!");
+    }
+
+    public ApiResponse changePassword(ChangePassword changePassword,int id) {
+        if (!changePassword.getNewPassword().equals(changePassword.getConfirmNewPassword())){
+            return new ApiResponse(false,"Yangi parol tasdiqlash paroli bn bir xil emas !");
+        }
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()){
+            if (!(passwordEncoder.matches(changePassword.getOldPassword(),optionalUser.get().getPassword()))){
+                return ApiResponse.builder()
+                        .message("Parollar mos emas !")
+                        .isSuccess(false)
+                        .build();
+            }else{
+                optionalUser.get().setPassword(passwordEncoder.encode(changePassword.getNewPassword()));
+                userRepository.save(optionalUser.get());
+            }
+        }else{
+            return new ApiResponse(false,"Eski parolni xato kiritingiz!");
+        }
+        return new ApiResponse(true, "Muvaffaqiyatli saqlandi!");
     }
 
     @Override

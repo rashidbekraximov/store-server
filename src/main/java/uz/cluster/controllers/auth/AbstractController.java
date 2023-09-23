@@ -1,7 +1,7 @@
 package uz.cluster.controllers.auth;
 
 import lombok.RequiredArgsConstructor;
-import uz.cluster.services.auth_service.AbstractService;
+import uz.cluster.services.auth.AbstractService;
 
 @RequiredArgsConstructor
 public abstract class AbstractController<S extends AbstractService> {

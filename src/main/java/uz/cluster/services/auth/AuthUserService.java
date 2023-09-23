@@ -1,4 +1,4 @@
-package uz.cluster.services.auth_service;
+package uz.cluster.services.auth;
 
 
 import lombok.RequiredArgsConstructor;

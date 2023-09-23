@@ -16,7 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import uz.cluster.services.auth_service.AuthService;
+import uz.cluster.services.auth.UserService;
 
 
 @Configuration
@@ -33,12 +33,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/auth/login"
     };
 
-    private final AuthService userService;
+    private final UserService userService;
 
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
 
     @Autowired
-    public WebSecurityConfig(@Lazy AuthService userService, JwtAuthenticationEntryPoint unauthorizedHandler) {
+    public WebSecurityConfig(@Lazy UserService userService, JwtAuthenticationEntryPoint unauthorizedHandler) {
         this.userService = userService;
         this.unauthorizedHandler = unauthorizedHandler;
     }
