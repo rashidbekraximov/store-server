@@ -27,8 +27,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/api-docs/**"
     };
 
-    private static final Logger logger = LoggerFactory.getLogger(WebSecurityConfig.class);
-
     public final static String[] AUTH_WHITE_LIST = {
             "/api/auth/login"
     };

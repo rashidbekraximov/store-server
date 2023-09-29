@@ -17,10 +17,6 @@ public class JwtUtils {
         return new Date(System.currentTimeMillis() + expiry);
     }
 
-    public static Date getExpiryForRefreshToken() {
-        return new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(30));
-    }
-
     public static Algorithm getAlgorithm() {
         return Algorithm.HMAC256(secret.getBytes());
     }

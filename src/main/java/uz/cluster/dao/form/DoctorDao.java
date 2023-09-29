@@ -4,9 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import uz.cluster.entity.Doctor;
-import uz.cluster.entity.Specialist;
-import uz.cluster.entity.WorkPlace;
+import uz.cluster.entity.reference.Specialist;
+import uz.cluster.entity.reference.WorkPlace;
 
 @Getter
 @Setter
@@ -20,7 +19,6 @@ public class DoctorDao extends BaseDao {
 
     private Specialist specialist;
 
-    //Image
     private String workExperience;
 
     private WorkPlace workPlace;
@@ -34,22 +32,4 @@ public class DoctorDao extends BaseDao {
     private int specialistId;
 
     private int workPlaceId;
-
-    public Doctor copy(DoctorDao dao) {
-        Doctor doctor = new Doctor();
-        doctor.setId((int) dao.getId());
-        doctor.setName(dao.getName());
-        doctor.setSurName(dao.getSurName());
-        doctor.setSpecialist(dao.getSpecialist());
-        doctor.setSpecialistId(dao.getSpecialistId());
-        doctor.setWorkPlaceId(dao.getWorkPlaceId());
-        doctor.setWorkPlace(dao.getWorkPlace());
-        doctor.setWorkExperience(dao.getWorkExperience());
-        doctor.setWorkPlace(dao.getWorkPlace());
-        doctor.setMettingPrice(dao.getMettingPrice());
-        doctor.setBeginWork(dao.getBeginWork());
-        doctor.setEndWork(dao.getEndWork());
-        return doctor;
-    }
-
 }

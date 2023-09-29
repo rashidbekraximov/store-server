@@ -11,6 +11,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ChangePassword {
 
+    private int userId;
+
+    private String system_role_name;
+
     private String oldPassword;
 
     private String newPassword;

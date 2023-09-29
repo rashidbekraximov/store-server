@@ -15,10 +15,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import uz.cluster.entity.auth.User;
 import uz.cluster.dao.SessionDto;
-import uz.cluster.response.AppErrorDto;
-import uz.cluster.response.DataDto;
-import uz.cluster.payload.auth.LoginDTO;
-import uz.cluster.security.JwtResponse;
+import uz.cluster.dao.response.DataDto;
+import uz.cluster.dao.auth.LoginDao;
+import uz.cluster.dao.response.JwtResponse;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -36,13 +35,14 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         this.authenticationManager = authenticationManager;
         super.setFilterProcessesUrl("/api/auth/login");
     }
+
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
-            LoginDTO loginDto = new ObjectMapper().readValue(request.getReader(), LoginDTO.class);
-            log.info("Username is: {}", loginDto.getLogin());
+            LoginDao loginDao = new ObjectMapper().readValue(request.getReader(), LoginDao.class);
+            log.info("Username is: {}", loginDao.getLogin());
             UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(loginDto.getLogin(), loginDto.getPassword());
+                    new UsernamePasswordAuthenticationToken(loginDao.getLogin(), loginDao.getPassword());
             return authenticationManager.authenticate(authenticationToken);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
@@ -54,7 +54,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException, IOException {
         User user = (User) authentication.getPrincipal();
         Date expiryForAccessToken = JwtUtils.getExpiry();
-        Date expiryForRefreshToken = JwtUtils.getExpiryForRefreshToken();
 
         SecurityContext sc = SecurityContextHolder.getContext();
         sc.setAuthentication(authentication);
@@ -66,25 +65,16 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .withClaim("activeUserId", user.getId())
                 .sign(JwtUtils.getAlgorithm());
 
-        JwtResponse jwtResponse = new JwtResponse(accessToken,true, user.getFirstName(),
+        JwtResponse jwtResponse = new JwtResponse(true, user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(), user.getLogin(),
                 user.getSystemRoleName().name(),true
         );
 
-        String refreshToken = JWT.create()
-                .withSubject(user.getUsername())
-                .withExpiresAt(expiryForRefreshToken)
-                .withIssuer(request.getRequestURL().toString())
-                .sign(JwtUtils.getAlgorithm());
-
-
         SessionDto sessionDto = SessionDto.builder()
                 .accessToken(accessToken)
                 .accessTokenExpiry(expiryForAccessToken.getTime())
                 .user(jwtResponse)
-                .refreshToken(refreshToken)
-                .refreshTokenExpiry(expiryForRefreshToken.getTime())
                 .issuedAt(System.currentTimeMillis())
                 .build();
 
@@ -93,14 +83,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        DataDto<AppErrorDto> resp = new DataDto<>(
-                AppErrorDto.builder()
-                        .message(failed.getMessage())
-                        .path(request.getRequestURL().toString())
-                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .build()
-        );
-        new ObjectMapper().writeValue(response.getOutputStream(), resp);
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
+        response.setStatus(HttpStatus.FORBIDDEN.value());
+        new ObjectMapper().writeValue(response.getOutputStream(),response);
     }
 }

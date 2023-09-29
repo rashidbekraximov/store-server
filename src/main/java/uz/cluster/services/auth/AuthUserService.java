@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import uz.cluster.entity.auth.User;
-import uz.cluster.repository.UserRepository;
+import uz.cluster.repository.auth.UserRepository;
 
 @Service
 @RequiredArgsConstructor
