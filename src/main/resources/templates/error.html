@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Error</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 450px;
+            width: 100%;
+        }
+        .error-icon {
+            font-size: 60px;
+            color: #E74C3C;
+            margin-bottom: 20px;
+        }
+        .error-title {
+            font-size: 24px;
+            color: #e74c3c;
+            margin-bottom: 10px;
+        }
+        .error-details {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        .error-info {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 20px;
+        }
+        .retry-button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .retry-button:hover {
+            background-color: #d43f3a;
+        }
+        .home-button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .home-button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="error-icon">⚠️</div>
+    <div class="error-title" th:text="${errorTitle}">Oops! Something went wrong.</div>
+    <div class="error-details" th:text="${errorDetails}">An unexpected error has occurred. Please try again later.</div>
+    <div class="error-info" th:text="${errorInfo}">Error code: 404 - Page not found.</div>
+    <a href="javascript:history.back()" class="retry-button">Retry</a>
+    <a href="/" class="home-button">Go Home</a>
+</div>
+</body>
+</html>
