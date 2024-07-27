@@ -17,6 +17,6 @@ public class SessionDto implements Serializable {
 //    private Long refreshTokenExpiry;
     private Long issuedAt;
     private String accessToken;
+    private JwtResponse jwtResponse;
 //    private String refreshToken;
-    private JwtResponse user;
 }

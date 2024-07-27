@@ -28,7 +28,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     };
 
     public final static String[] AUTH_WHITE_LIST = {
-            "/api/auth/login"
+            "/api/**",
     };
 
     private final UserService userService;

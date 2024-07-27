@@ -13,11 +13,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import uz.cluster.dao.response.DataDto;
+import uz.cluster.dao.response.JwtResponse;
 import uz.cluster.entity.auth.User;
 import uz.cluster.dao.SessionDto;
-import uz.cluster.dao.response.DataDto;
 import uz.cluster.dao.auth.LoginDao;
-import uz.cluster.dao.response.JwtResponse;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -66,15 +66,14 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .sign(JwtUtils.getAlgorithm());
 
         JwtResponse jwtResponse = new JwtResponse(true, user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(), user.getLogin(),
+                user.getLogin(),
                 user.getSystemRoleName().name(),true
         );
 
         SessionDto sessionDto = SessionDto.builder()
                 .accessToken(accessToken)
                 .accessTokenExpiry(expiryForAccessToken.getTime())
-                .user(jwtResponse)
+                .jwtResponse(jwtResponse)
                 .issuedAt(System.currentTimeMillis())
                 .build();
 

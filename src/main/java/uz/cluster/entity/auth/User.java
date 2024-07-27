@@ -37,17 +37,11 @@ public class User extends Auditable  implements UserDetails {
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
-
     @Column(name = "login", unique = true, nullable = false)
     private String login;
 
     @Column(name = "password", nullable = false)
     private String password;
-
-    @Column(name = "email", unique = true, nullable = false)
-    private String email;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", columnDefinition = "varchar(10) default 'ACTIVE'")
@@ -74,10 +68,8 @@ public class User extends Auditable  implements UserDetails {
             String password, String email,
             SystemRoleName systemRoleName, boolean accountNonLocked) {
         this.firstName = firstName;
-        this.lastName = lastName;
         this.login = login;
         this.password = password;
-        this.email = email;
         this.systemRoleName = systemRoleName;
         this.accountNonLocked = accountNonLocked;
         this.enabled = false;
@@ -85,10 +77,8 @@ public class User extends Auditable  implements UserDetails {
 
     public void copy(User user) {
         this.firstName = user.firstName;
-        this.lastName = user.lastName;
         this.login = user.login;
         this.password = user.password;
-        this.email = user.email;
     }
 
     @Override

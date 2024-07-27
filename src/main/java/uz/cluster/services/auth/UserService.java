@@ -2,7 +2,6 @@ package uz.cluster.services.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,8 +12,8 @@ import uz.cluster.dao.auth.ChangePassword;
 import uz.cluster.dao.auth.UserDao;
 import uz.cluster.dao.response.ApiResponse;
 import uz.cluster.entity.auth.User;
+import uz.cluster.enums.auth.SystemRoleName;
 import uz.cluster.repository.auth.UserRepository;
-import uz.cluster.services.reference.AttachmentService;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +26,7 @@ public class UserService implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final AttachmentService att;
+//    private final AttachmentService att;
 
     private ModelMapper mapper;
 
@@ -36,11 +35,11 @@ public class UserService implements UserDetailsService {
         if (userRepository.existsByLoginAndIdNot(userDao.getLogin(), 0)) //This will check login is unique or not, if not it terminates from adding
             return new ApiResponse(false, "");
 
-        if (userRepository.existsByEmailAndIdNot(userDao.getEmail(), 0)) //This will check that email is already exists or not, if not it terminates from adding
-            return new ApiResponse(false, "");
-
-        User user = mapper.map(userDao,User.class);
-
+        User user = new User();
+        user.setFirstName(userDao.getFirstName());
+        user.setAccountNonLocked(true);
+        user.setLogin(userDao.getLogin());
+        user.setSystemRoleName(SystemRoleName.SYSTEM_ROLE_SUPER_ADMIN);
         user.setPassword(passwordEncoder.encode(userDao.getPassword())); //This sets user's password that is encrypted
         userRepository.save(user); //this saves user to database
         return new ApiResponse(true, user, "Muvaffaqiyatli saqlandi!");
@@ -53,9 +52,6 @@ public class UserService implements UserDetailsService {
 
         ApiResponse apiResponse = new ApiResponse();
         if (userRepository.existsByLoginAndIdNot(user.getLogin(), user.getId())) //This will check login is unique or not, if not it terminates from adding
-            return new ApiResponse(false, "");
-
-        if (userRepository.existsByEmailAndIdNot(user.getEmail(), user.getId())) //This will check that email is already exists or not, if not it terminates from adding
             return new ApiResponse(false, "");
 
         Optional<User> optionalUser = userRepository.findById(id);
@@ -91,9 +87,6 @@ public class UserService implements UserDetailsService {
     }
 
     public ApiResponse changePassword(ChangePassword changePassword, int id) {
-        if (!changePassword.getNewPassword().equals(changePassword.getConfirmNewPassword())) {
-            return new ApiResponse(false, "Yangi parol tasdiqlash paroli bn bir xil emas !");
-        }
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             if (!(passwordEncoder.matches(changePassword.getOldPassword(), optionalUser.get().getPassword()))) {
