@@ -11,8 +11,6 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import uz.cluster.entity.Auditable;
-import uz.cluster.enums.Status;
 import uz.cluster.enums.auth.SystemRoleName;
 
 import javax.persistence.*;
@@ -26,7 +24,7 @@ import java.util.Collections;
 @Audited(targetAuditMode = RelationTargetAuditMode.AUDITED)
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = {"login"})})
-public class User extends Auditable  implements UserDetails {
+public class User  implements UserDetails {
     @Hidden
     @Id
     @SequenceGenerator(allocationSize = 1, name = "users_sq", sequenceName = "users_sq")
@@ -42,10 +40,6 @@ public class User extends Auditable  implements UserDetails {
 
     @Column(name = "password", nullable = false)
     private String password;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", columnDefinition = "varchar(10) default 'ACTIVE'")
-    private Status status = Status.ACTIVE;
 
     @Column
     private boolean enabled = true; //Mail checking turned off

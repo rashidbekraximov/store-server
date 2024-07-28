@@ -12,13 +12,13 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import uz.cluster.bot.TelegramBot;
-import uz.cluster.configuration.OpenApiProperties;
+//import uz.cluster.configuration.OpenApiProperties;
 import uz.cluster.handlers.impl.UpdateHandler;
 
 
-@EnableConfigurationProperties({
-        OpenApiProperties.class,
-})
+//@EnableConfigurationProperties({
+//        OpenApiProperties.class,
+//})
 @EnableJpaRepositories(value = {"uz.cluster.*"})
 @ComponentScan(value = {"uz.cluster.*"})
 @SpringBootApplication()

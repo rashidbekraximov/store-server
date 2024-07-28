@@ -9,9 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubTabDao {
+public class ResOne {
 
-    private long optId;
+    private DataOne data;
 
-    private String listId;
 }

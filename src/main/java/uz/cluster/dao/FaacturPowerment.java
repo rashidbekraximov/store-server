@@ -1,17 +1,21 @@
 package uz.cluster.dao;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubTabDao {
+public class FaacturPowerment {
 
-    private long optId;
+    private String empowermentno;
 
-    private String listId;
+    private String empowermentdateofissue;
+
+    private String agentfio;
+
 }

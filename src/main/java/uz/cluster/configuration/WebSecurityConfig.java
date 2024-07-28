@@ -33,12 +33,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
 
-    private final JwtAuthenticationEntryPoint unauthorizedHandler;
+//    private final JwtAuthenticationEntryPoint unauthorizedHandler;
 
     @Autowired
-    public WebSecurityConfig(@Lazy UserService userService, JwtAuthenticationEntryPoint unauthorizedHandler) {
+    public WebSecurityConfig(@Lazy UserService userService) {
         this.userService = userService;
-        this.unauthorizedHandler = unauthorizedHandler;
+//        this.unauthorizedHandler = unauthorizedHandler;
     }
 
     @Bean
@@ -59,7 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf()
                 .disable()
                 .exceptionHandling()
-                .authenticationEntryPoint(unauthorizedHandler)
+//                .authenticationEntryPoint(unauthorizedHandler)
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -72,8 +72,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .authenticated();
 
-        http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
-        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+//        http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
+//        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Autowired

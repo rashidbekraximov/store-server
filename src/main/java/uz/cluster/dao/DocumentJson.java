@@ -9,9 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubTabDao {
+public class DocumentJson {
 
-    private long optId;
+    private Agent agent;
 
-    private String listId;
 }

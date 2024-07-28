@@ -9,9 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubTabDao {
+public class Request {
 
-    private long optId;
-
-    private String listId;
+    private DidoxData body;
 }

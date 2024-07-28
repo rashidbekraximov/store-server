@@ -5,13 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubTabDao {
+public class Factur {
 
-    private long optId;
+    private String facturano;
 
-    private String listId;
+    private String facturadate;
 }
